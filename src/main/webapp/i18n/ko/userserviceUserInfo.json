@@ -1,0 +1,37 @@
+{
+  "userserviceApp": {
+    "userserviceUserInfo": {
+      "home": {
+        "title": "User Infos",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new User Info",
+        "createOrEditLabel": "Create or edit a User Info",
+        "search": "Search for User Info",
+        "notFound": "No User Infos found"
+      },
+      "created": "A new User Info is created with identifier {{ param }}",
+      "updated": "A User Info is updated with identifier {{ param }}",
+      "deleted": "A User Info is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete User Info {{ id }}?"
+      },
+      "detail": {
+        "title": "User Info"
+      },
+      "id": "Id",
+      "userId": "User Id",
+      "firstname": "Firstname",
+      "lastname": "Lastname",
+      "alias": "Alias",
+      "gender": "Gender",
+      "email": "Email",
+      "phone": "Phone",
+      "addressLine1": "Address Line 1",
+      "addressLine2": "Address Line 2",
+      "city": "City",
+      "country": "Country",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At"
+    }
+  }
+}

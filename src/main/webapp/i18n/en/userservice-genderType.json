@@ -1,0 +1,10 @@
+{
+  "userserviceApp": {
+    "GenderType": {
+      "null": "",
+      "MALE": "MALE",
+      "FEMALE": "FEMALE",
+      "OTHER": "OTHER"
+    }
+  }
+}
