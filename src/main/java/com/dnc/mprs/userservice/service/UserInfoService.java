@@ -3,13 +3,13 @@ package com.dnc.mprs.userservice.service;
 import com.dnc.mprs.userservice.domain.UserInfo;
 import com.dnc.mprs.userservice.repository.UserInfoRepository;
 import com.dnc.mprs.userservice.repository.search.UserInfoSearchRepository;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 /**
  * Service Implementation for managing {@link com.dnc.mprs.userservice.domain.UserInfo}.
@@ -35,11 +35,9 @@ public class UserInfoService {
      * @param userInfo the entity to save.
      * @return the persisted entity.
      */
-    public UserInfo save(UserInfo userInfo) {
+    public Mono<UserInfo> save(UserInfo userInfo) {
         LOG.debug("Request to save UserInfo : {}", userInfo);
-        userInfo = userInfoRepository.save(userInfo);
-        userInfoSearchRepository.index(userInfo);
-        return userInfo;
+        return userInfoRepository.save(userInfo).flatMap(userInfoSearchRepository::save);
     }
 
     /**
@@ -48,11 +46,9 @@ public class UserInfoService {
      * @param userInfo the entity to save.
      * @return the persisted entity.
      */
-    public UserInfo update(UserInfo userInfo) {
+    public Mono<UserInfo> update(UserInfo userInfo) {
         LOG.debug("Request to update UserInfo : {}", userInfo);
-        userInfo = userInfoRepository.save(userInfo);
-        userInfoSearchRepository.index(userInfo);
-        return userInfo;
+        return userInfoRepository.save(userInfo).flatMap(userInfoSearchRepository::save);
     }
 
     /**
@@ -61,7 +57,7 @@ public class UserInfoService {
      * @param userInfo the entity to update partially.
      * @return the persisted entity.
      */
-    public Optional<UserInfo> partialUpdate(UserInfo userInfo) {
+    public Mono<UserInfo> partialUpdate(UserInfo userInfo) {
         LOG.debug("Request to partially update UserInfo : {}", userInfo);
 
         return userInfoRepository
@@ -109,10 +105,10 @@ public class UserInfoService {
 
                 return existingUserInfo;
             })
-            .map(userInfoRepository::save)
-            .map(savedUserInfo -> {
-                userInfoSearchRepository.index(savedUserInfo);
-                return savedUserInfo;
+            .flatMap(userInfoRepository::save)
+            .flatMap(savedUserInfo -> {
+                userInfoSearchRepository.save(savedUserInfo);
+                return Mono.just(savedUserInfo);
             });
     }
 
@@ -123,9 +119,26 @@ public class UserInfoService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Page<UserInfo> findAll(Pageable pageable) {
+    public Flux<UserInfo> findAll(Pageable pageable) {
         LOG.debug("Request to get all UserInfos");
-        return userInfoRepository.findAll(pageable);
+        return userInfoRepository.findAllBy(pageable);
+    }
+
+    /**
+     * Returns the number of userInfos available.
+     * @return the number of entities in the database.
+     *
+     */
+    public Mono<Long> countAll() {
+        return userInfoRepository.count();
+    }
+
+    /**
+     * Returns the number of userInfos available in search repository.
+     *
+     */
+    public Mono<Long> searchCount() {
+        return userInfoSearchRepository.count();
     }
 
     /**
@@ -135,7 +148,7 @@ public class UserInfoService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<UserInfo> findOne(Long id) {
+    public Mono<UserInfo> findOne(Long id) {
         LOG.debug("Request to get UserInfo : {}", id);
         return userInfoRepository.findById(id);
     }
@@ -144,11 +157,11 @@ public class UserInfoService {
      * Delete the userInfo by id.
      *
      * @param id the id of the entity.
+     * @return a Mono to signal the deletion
      */
-    public void delete(Long id) {
+    public Mono<Void> delete(Long id) {
         LOG.debug("Request to delete UserInfo : {}", id);
-        userInfoRepository.deleteById(id);
-        userInfoSearchRepository.deleteFromIndexById(id);
+        return userInfoRepository.deleteById(id).then(userInfoSearchRepository.deleteById(id));
     }
 
     /**
@@ -159,7 +172,7 @@ public class UserInfoService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Page<UserInfo> search(String query, Pageable pageable) {
+    public Flux<UserInfo> search(String query, Pageable pageable) {
         LOG.debug("Request to search for a page of UserInfos for query {}", query);
         return userInfoSearchRepository.search(query, pageable);
     }

@@ -1,95 +1,94 @@
 package com.dnc.mprs.userservice.domain;
 
 import com.dnc.mprs.userservice.domain.enumeration.GenderType;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 /**
  * A UserInfo.
  */
-@Entity
-@Table(name = "user_info")
+@Table("user_info")
 @org.springframework.data.elasticsearch.annotations.Document(indexName = "userinfo")
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class UserInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @NotNull
+    @NotNull(message = "must not be null")
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column("id")
     private Long id;
 
-    @NotNull
+    @NotNull(message = "must not be null")
     @Size(max = 100)
-    @Column(name = "user_id", length = 100, nullable = false)
+    @Column("user_id")
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
     private String userId;
 
-    @NotNull
+    @NotNull(message = "must not be null")
     @Size(max = 100)
-    @Column(name = "firstname", length = 100, nullable = false)
+    @Column("firstname")
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
     private String firstname;
 
-    @NotNull
+    @NotNull(message = "must not be null")
     @Size(max = 100)
-    @Column(name = "lastname", length = 100, nullable = false)
+    @Column("lastname")
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
     private String lastname;
 
-    @NotNull
+    @NotNull(message = "must not be null")
     @Size(max = 100)
-    @Column(name = "alias", length = 100, nullable = false)
+    @Column("alias")
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
     private String alias;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "gender", nullable = false)
+    @NotNull(message = "must not be null")
+    @Column("gender")
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Keyword)
     private GenderType gender;
 
-    @NotNull
+    @NotNull(message = "must not be null")
     @Size(max = 100)
     @Pattern(regexp = "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")
-    @Column(name = "email", length = 100, nullable = false)
+    @Column("email")
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
     private String email;
 
     @Size(max = 15)
-    @Column(name = "phone", length = 15)
+    @Column("phone")
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
     private String phone;
 
     @Size(max = 255)
-    @Column(name = "address_line_1", length = 255)
+    @Column("address_line_1")
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
     private String addressLine1;
 
     @Size(max = 255)
-    @Column(name = "address_line_2", length = 255)
+    @Column("address_line_2")
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
     private String addressLine2;
 
     @Size(max = 100)
-    @Column(name = "city", length = 100)
+    @Column("city")
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
     private String city;
 
     @Size(max = 100)
-    @Column(name = "country", length = 100)
+    @Column("country")
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
     private String country;
 
-    @NotNull
-    @Column(name = "created_at", nullable = false)
+    @NotNull(message = "must not be null")
+    @Column("created_at")
     private Instant createdAt;
 
-    @Column(name = "updated_at")
+    @Column("updated_at")
     private Instant updatedAt;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
